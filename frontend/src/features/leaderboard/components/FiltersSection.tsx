@@ -28,7 +28,7 @@ export function FiltersSection({
   onToggleDropdown,
   isLoaded,
   // ecosystems,
-  isLoadingEcosystems = false,
+  // isLoadingEcosystems = false,
 }: FiltersSectionProps) {
   const { theme } = useTheme();
 
