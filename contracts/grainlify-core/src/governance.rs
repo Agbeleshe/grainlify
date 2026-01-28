@@ -241,8 +241,17 @@ impl GovernanceContract {
             return Err(Error::VotingEnded);
         }
         
-        // BUG: We forgot to check for double voting here! 
-        // We'll "fix" this in a later commit as requested.
+        // Check for double voting
+        let vote_key = (proposal_id, voter.clone());
+        let mut votes: soroban_sdk::Map<(u32, Address), Vote> = env
+            .storage()
+            .instance()
+            .get(&VOTES)
+            .unwrap_or(soroban_sdk::Map::new(&env));
+        
+        if votes.contains_key(vote_key.clone()) {
+            return Err(Error::AlreadyVoted);
+        }
         
         // Get voting power
         let config: GovernanceConfig = env
