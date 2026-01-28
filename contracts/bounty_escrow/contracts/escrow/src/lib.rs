@@ -451,18 +451,18 @@ pub enum Error {
     InvalidFeeRate = 8,
     FeeRecipientNotSet = 9,
     InvalidBatchSize = 10,
-    BatchSizeMismatch = 11,
+    /// Returned when contract is paused and operation is blocked
+    ContractPaused = 11,
     DuplicateBountyId = 12,
     /// Returned when amount is invalid (zero, negative, or exceeds available)
     InvalidAmount = 13,
     /// Returned when deadline is invalid (in the past or too far in the future)
     InvalidDeadline = 14,
-    /// Returned when contract is paused and operation is blocked
-    ContractPaused = 11,
     /// Returned when contract has insufficient funds for the operation
     InsufficientFunds = 16,
     /// Returned when refund is attempted without admin approval
     RefundNotApproved = 17,
+    BatchSizeMismatch = 18,
 }
 
 // ============================================================================
@@ -799,7 +799,7 @@ impl BountyEscrowContract {
     /// Check if contract is paused (internal helper)
     fn is_paused_internal(env: &Env) -> bool {
         env.storage()
-            .instance()
+            .persistent()
             .get::<_, bool>(&DataKey::IsPaused)
             .unwrap_or(false)
     }
@@ -823,7 +823,7 @@ impl BountyEscrowContract {
             return Ok(()); // Already paused, idempotent
         }
 
-        env.storage().instance().set(&DataKey::IsPaused, &true);
+        env.storage().persistent().set(&DataKey::IsPaused, &true);
 
         emit_contract_paused(
             &env,
@@ -850,7 +850,7 @@ impl BountyEscrowContract {
             return Ok(()); // Already unpaused, idempotent
         }
 
-        env.storage().instance().set(&DataKey::IsPaused, &false);
+        env.storage().persistent().set(&DataKey::IsPaused, &false);
 
         emit_contract_unpaused(
             &env,

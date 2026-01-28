@@ -2340,7 +2340,7 @@ mod test {
         release_timestamp: u64,
     ) {
         // Register program
-        client.register_program(program_id, token, authorized_key);
+        client.initialize_program(program_id, token, authorized_key);
         
         // Create and fund token
         let token_client = create_token_contract(env, authorized_key);
@@ -2349,7 +2349,7 @@ mod test {
         
         // Lock funds for program
         token_client.approve(authorized_key, &env.current_contract_address(), &total_amount, &1000);
-        client.lock_funds(program_id, &total_amount);
+        client.lock_program_funds(program_id, &total_amount);
         
         // Create release schedule
         client.create_program_release_schedule(
@@ -2420,7 +2420,7 @@ mod test {
         env.mock_all_auths();
         
         // Register program
-        client.register_program(&program_id, &token, &authorized_key);
+        client.initialize_program(&program_id, &token, &authorized_key);
         
         // Create and fund token
         let token_client = create_token_contract(&env, &authorized_key);
@@ -2429,7 +2429,7 @@ mod test {
         
         // Lock funds for program
         token_client.approve(&authorized_key, &env.current_contract_address(), &total_amount, &1000);
-        client.lock_funds(&program_id, &total_amount);
+        client.lock_program_funds(&program_id, &total_amount);
         
         // Create first release schedule
         client.create_program_release_schedule(
@@ -2557,7 +2557,7 @@ mod test {
         
         // Manually release before timestamp (authorized key can do this)
         env.ledger().set_timestamp(999);
-        client.release_prog_schedule_manual(&program_id, &1);
+        client.release_program_schedule_manual(&program_id, &1);
         
         // Verify schedule was released
         let schedule = client.get_program_release_schedule(&program_id, &1);
@@ -2591,7 +2591,7 @@ mod test {
         env.mock_all_auths();
         
         // Register program
-        client.register_program(&program_id, &token, &authorized_key);
+        client.initialize_program(&program_id, &token, &authorized_key);
         
         // Create and fund token
         let token_client = create_token_contract(&env, &authorized_key);
@@ -2600,7 +2600,7 @@ mod test {
         
         // Lock funds for program
         token_client.approve(&authorized_key, &env.current_contract_address(), &total_amount, &1000);
-        client.lock_funds(&program_id, &total_amount);
+        client.lock_program_funds(&program_id, &total_amount);
         
         // Create first schedule
         client.create_program_release_schedule(
@@ -2619,7 +2619,7 @@ mod test {
         );
         
         // Release first schedule manually
-        client.release_prog_schedule_manual(&program_id, &1);
+        client.release_program_schedule_manual(&program_id, &1);
         
         // Advance time and release second schedule automatically
         env.ledger().set_timestamp(2001);
@@ -2675,7 +2675,7 @@ mod test {
         env.mock_all_auths();
         
         // Register program
-        client.register_program(&program_id, &token, &authorized_key);
+        client.initialize_program(&program_id, &token, &authorized_key);
         
         // Create and fund token
         let token_client = create_token_contract(&env, &authorized_key);
@@ -2684,7 +2684,7 @@ mod test {
         
         // Lock funds for program
         token_client.approve(&authorized_key, &env.current_contract_address(), &total_amount, &1000);
-        client.lock_funds(&program_id, &total_amount);
+        client.lock_program_funds(&program_id, &total_amount);
         
         // Create overlapping schedules (all at same timestamp)
         client.create_program_release_schedule(
